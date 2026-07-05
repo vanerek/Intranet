@@ -12,12 +12,14 @@ export default function Canteen() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Jídelníček kantýny</h1>
+        <h1 className="font-display text-3xl font-bold text-slate-900 dark:text-white tracking-tight pt-2">
+          Jídelníček kantýny
+        </h1>
         <a
           href="https://jidelna.example.alps.cz"
           target="_blank"
           rel="noreferrer"
-          className="flex items-center gap-2 bg-accent text-white text-sm font-bold px-4 py-2 rounded-lg hover:bg-accent/90 transition-colors"
+          className="flex items-center gap-2 bg-gradient-to-r from-accent to-accent-2 text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow-lg shadow-accent/25 hover:shadow-accent/40 hover:-translate-y-0.5 transition-all"
         >
           Objednat oběd <ExternalLink size={14} />
         </a>
@@ -32,15 +34,18 @@ export default function Canteen() {
           return (
             <Card
               key={day.day}
-              className={`p-5 flex flex-col gap-3 ${isToday ? '!border-accent ring-1 ring-accent' : ''}`}
+              className={`p-5 flex flex-col gap-3 ${isToday ? '!border-accent/60 ring-2 ring-accent/30' : ''}`}
               delay={day.day * 0.05}
+              hover
             >
               <div className="flex items-center justify-between">
                 <h3 className="font-black text-slate-900 dark:text-white uppercase text-sm tracking-wide">
                   {dayNames[day.day]}
                 </h3>
                 {isToday && (
-                  <span className="text-[10px] font-black bg-accent text-white px-2 py-0.5 rounded uppercase">Dnes</span>
+                  <span className="text-[10px] font-black bg-gradient-to-r from-accent to-accent-2 text-white px-2.5 py-0.5 rounded-full uppercase shadow-md shadow-accent/25">
+                    Dnes
+                  </span>
                 )}
               </div>
               <p className="text-xs text-slate-500 italic flex items-center gap-1.5">

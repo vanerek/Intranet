@@ -11,7 +11,9 @@ export default function News() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Aktuality</h1>
+        <h1 className="font-display text-3xl font-bold text-slate-900 dark:text-white tracking-tight pt-2">
+          Aktuality
+        </h1>
         <div className="flex gap-2 flex-wrap">
           <FilterChip label="Vše" active={category === 'all'} onClick={() => setCategory('all')} />
           {categories.data?.map((c) => (
@@ -25,7 +27,7 @@ export default function News() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {announcements.data?.map((a, i) => (
-          <Card key={a.id} className="overflow-hidden flex flex-col" delay={Math.min(i * 0.05, 0.3)}>
+          <Card key={a.id} className="overflow-hidden flex flex-col" delay={Math.min(i * 0.05, 0.3)} hover>
             {a.image && (
               <div className="h-40 w-full bg-cover bg-center" style={{ backgroundImage: `url('${a.image}')` }}></div>
             )}
@@ -64,10 +66,10 @@ function FilterChip({ label, active, onClick }: { label: string; active: boolean
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors ${
+      className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
         active
-          ? 'bg-accent text-white'
-          : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 hover:border-accent hover:text-accent'
+          ? 'bg-gradient-to-r from-accent to-accent-2 text-white shadow-lg shadow-accent/25'
+          : 'glass text-slate-600 dark:text-slate-400 hover:text-accent hover:border-accent/40'
       }`}
     >
       {label}

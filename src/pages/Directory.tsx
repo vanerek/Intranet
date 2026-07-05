@@ -14,7 +14,9 @@ export default function Directory() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Adresář zaměstnanců</h1>
+        <h1 className="font-display text-3xl font-bold text-slate-900 dark:text-white tracking-tight pt-2">
+          Adresář zaměstnanců
+        </h1>
         <div className="flex gap-3 flex-wrap">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
@@ -22,13 +24,13 @@ export default function Directory() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Hledat jméno, pozici, e-mail…"
-              className="pl-9 pr-4 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm w-64 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+              className="glass pl-9 pr-4 py-2.5 rounded-xl text-sm w-64 focus:outline-none focus:border-accent/60 focus:ring-2 focus:ring-accent/20 transition-shadow"
             />
           </div>
           <select
             value={department}
             onChange={(e) => setDepartment(e.target.value)}
-            className="px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:border-accent"
+            className="glass px-3 py-2.5 rounded-xl text-sm focus:outline-none focus:border-accent/60 focus:ring-2 focus:ring-accent/20 transition-shadow dark:[&>option]:bg-slate-900"
           >
             <option value="all">Všechna oddělení</option>
             {departments.data?.map((d) => (
@@ -45,9 +47,9 @@ export default function Directory() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {employees.data?.map((emp, i) => (
-          <Card key={emp.id} className="p-5" delay={Math.min(i * 0.03, 0.2)}>
+          <Card key={emp.id} className="p-5" delay={Math.min(i * 0.03, 0.2)} hover>
             <div className="flex items-start gap-4">
-              <div className="size-12 rounded-full bg-accent/10 text-accent flex items-center justify-center font-black text-sm shrink-0">
+              <div className="size-12 rounded-2xl bg-gradient-to-br from-accent to-accent-2 text-white flex items-center justify-center font-black text-sm shrink-0 shadow-lg shadow-accent/20">
                 {initials(emp.name)}
               </div>
               <div className="min-w-0">
