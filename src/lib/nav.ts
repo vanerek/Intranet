@@ -16,12 +16,13 @@ export function pageFromHash(): Page {
   return pages.some((p) => p.id === hash) ? (hash as Page) : 'dashboard';
 }
 
-export type Design = 'glass' | 'editorial' | 'neo';
+export type Design = 'glass' | 'editorial' | 'neo' | 'corporate';
 
 export const designs: { id: Design; label: string }[] = [
   { id: 'glass', label: 'Aurora' },
   { id: 'editorial', label: 'Papír' },
   { id: 'neo', label: 'Neon' },
+  { id: 'corporate', label: 'Corporate' },
 ];
 
 export function initialDesign(): Design {
