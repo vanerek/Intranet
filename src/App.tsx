@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Bell, Moon, Sun, Building2, Menu, X } from 'lucide-react';
+import { Bell, Moon, Sun, Menu, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import Dashboard from './pages/Dashboard';
 import News from './pages/News';
 import Directory from './pages/Directory';
@@ -23,18 +24,18 @@ function pageFromHash(): Page {
 
 export default function App() {
   const [page, setPage] = useState<Page>(pageFromHash);
-
-  useEffect(() => {
-    const onHashChange = () => setPage(pageFromHash());
-    window.addEventListener('hashchange', onHashChange);
-    return () => window.removeEventListener('hashchange', onHashChange);
-  }, []);
   const [dark, setDark] = useState(() => {
     const saved = localStorage.getItem('theme');
     if (saved) return saved === 'dark';
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
   const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const onHashChange = () => setPage(pageFromHash());
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark);
@@ -49,113 +50,158 @@ export default function App() {
   };
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden selection:bg-accent/30">
-      <header className="sticky-nav px-4 md:px-10 py-3">
-        <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <button
-              className="xl:hidden p-2 text-slate-600 dark:text-slate-400"
-              onClick={() => setMenuOpen(!menuOpen)}
-              aria-label="Menu"
-            >
-              {menuOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
-            <button onClick={() => navigate('dashboard')} className="flex flex-col items-start">
-              <h2 className="text-primary dark:text-white text-2xl font-black leading-none tracking-tighter uppercase italic">
-                ALPS ALPINE
-              </h2>
-              <span className="text-[10px] font-bold text-primary dark:text-slate-400 uppercase italic tracking-wider ml-1">
-                extends your senses
-              </span>
-            </button>
-          </div>
-
-          <nav className="hidden xl:flex items-center gap-8">
-            {pages.map((p) => (
+    <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden selection:bg-accent/25">
+      {/* Plovoucí skleněná navigace */}
+      <header className="sticky top-0 z-50 px-3 md:px-6 pt-3">
+        <div className="max-w-[1440px] mx-auto glass-strong rounded-2xl shadow-[0_8px_30px_rgba(2,20,60,0.08)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)] px-4 md:px-6 py-3">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
               <button
-                key={p.id}
-                onClick={() => navigate(p.id)}
-                className={
-                  page === p.id
-                    ? 'text-accent text-sm font-semibold border-b-2 border-accent pb-1'
-                    : 'text-slate-600 dark:text-slate-400 text-sm font-medium hover:text-accent transition-colors pb-1 border-b-2 border-transparent'
-                }
+                className="xl:hidden p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-900/5 dark:hover:bg-white/5 rounded-xl transition-colors"
+                onClick={() => setMenuOpen(!menuOpen)}
+                aria-label="Menu"
               >
-                {p.label}
+                {menuOpen ? <X size={20} /> : <Menu size={20} />}
               </button>
-            ))}
-          </nav>
+              <button onClick={() => navigate('dashboard')} className="flex flex-col items-start group">
+                <h2 className="text-primary dark:text-white text-xl md:text-2xl font-black leading-none tracking-tighter uppercase italic group-hover:text-accent transition-colors">
+                  ALPS ALPINE
+                </h2>
+                <span className="text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase italic tracking-[0.2em] ml-0.5">
+                  extends your senses
+                </span>
+              </button>
+            </div>
 
-          <div className="flex items-center gap-2 md:gap-4">
-            <button
-              className="p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
-              onClick={() => setDark(!dark)}
-              aria-label="Přepnout tmavý režim"
-            >
-              {dark ? <Sun size={20} /> : <Moon size={20} />}
-            </button>
-            <button className="relative p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
-              <Bell size={20} />
-              <span className="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"></span>
-            </button>
-            <div className="h-8 w-[1px] bg-slate-200 dark:bg-slate-700 mx-1 hidden sm:block"></div>
-            <div className="flex items-center gap-3 pl-2">
-              <div className="text-right hidden sm:block">
-                <p className="text-xs font-bold text-slate-900 dark:text-white leading-none">Jan Novák</p>
-                <p className="text-[10px] text-slate-500 font-medium">Vedoucí provozu</p>
+            {/* Pilulková navigace s animovaným indikátorem */}
+            <nav className="hidden xl:flex items-center gap-1 bg-slate-900/5 dark:bg-white/5 rounded-full p-1">
+              {pages.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => navigate(p.id)}
+                  className={`relative px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
+                    page === p.id
+                      ? 'text-white'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  {page === p.id && (
+                    <motion.span
+                      layoutId="nav-pill"
+                      transition={{ type: 'spring', bounce: 0.25, duration: 0.55 }}
+                      className="absolute inset-0 rounded-full bg-gradient-to-r from-accent to-accent-2 shadow-lg shadow-accent/30"
+                    />
+                  )}
+                  <span className="relative z-10">{p.label}</span>
+                </button>
+              ))}
+            </nav>
+
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <button
+                className="p-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-900/5 dark:hover:bg-white/5 rounded-xl transition-colors"
+                onClick={() => setDark(!dark)}
+                aria-label="Přepnout tmavý režim"
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.span
+                    key={dark ? 'sun' : 'moon'}
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="block"
+                  >
+                    {dark ? <Sun size={19} /> : <Moon size={19} />}
+                  </motion.span>
+                </AnimatePresence>
+              </button>
+              <button className="relative p-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-900/5 dark:hover:bg-white/5 rounded-xl transition-colors">
+                <Bell size={19} />
+                <span className="absolute top-2 right-2 size-2 bg-gradient-to-r from-accent to-accent-2 rounded-full ring-2 ring-white dark:ring-slate-900"></span>
+              </button>
+              <div className="h-7 w-px bg-slate-300/60 dark:bg-slate-700/60 mx-1 hidden sm:block"></div>
+              <div className="flex items-center gap-3 pl-1">
+                <div className="text-right hidden sm:block">
+                  <p className="text-xs font-bold text-slate-900 dark:text-white leading-none">Jan Novák</p>
+                  <p className="text-[10px] text-slate-500 font-medium mt-0.5">Vedoucí provozu</p>
+                </div>
+                <div className="relative">
+                  <div className="size-10 rounded-full bg-gradient-to-br from-accent to-accent-2 text-white flex items-center justify-center font-black text-sm ring-2 ring-white/70 dark:ring-slate-700/70">
+                    JN
+                  </div>
+                  <span className="absolute bottom-0 right-0 size-2.5 bg-emerald-500 rounded-full ring-2 ring-white dark:ring-slate-900"></span>
+                </div>
               </div>
-              <div
-                className="size-10 rounded-full bg-slate-200 border-2 border-accent/20 bg-cover bg-center"
-                style={{ backgroundImage: "url('https://picsum.photos/seed/user123/100/100')" }}
-              ></div>
             </div>
           </div>
-        </div>
 
-        {menuOpen && (
-          <nav className="xl:hidden flex flex-col gap-1 pt-3 pb-1 max-w-[1440px] mx-auto">
-            {pages.map((p) => (
-              <button
-                key={p.id}
-                onClick={() => navigate(p.id)}
-                className={`text-left px-3 py-2.5 rounded-lg text-sm transition-colors ${
-                  page === p.id
-                    ? 'bg-accent/10 text-accent font-semibold'
-                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
-                }`}
+          <AnimatePresence>
+            {menuOpen && (
+              <motion.nav
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                className="xl:hidden flex flex-col gap-1 overflow-hidden"
               >
-                {p.label}
-              </button>
-            ))}
-          </nav>
-        )}
+                <div className="pt-3 pb-1 flex flex-col gap-1">
+                  {pages.map((p) => (
+                    <button
+                      key={p.id}
+                      onClick={() => navigate(p.id)}
+                      className={`text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+                        page === p.id
+                          ? 'bg-gradient-to-r from-accent to-accent-2 text-white shadow-lg shadow-accent/25'
+                          : 'text-slate-600 dark:text-slate-400 hover:bg-slate-900/5 dark:hover:bg-white/5'
+                      }`}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+              </motion.nav>
+            )}
+          </AnimatePresence>
+        </div>
       </header>
 
-      <main className="flex-1 max-w-[1440px] mx-auto w-full p-6">
-        {page === 'dashboard' && <Dashboard navigate={navigate} />}
-        {page === 'news' && <News />}
-        {page === 'directory' && <Directory />}
-        {page === 'canteen' && <Canteen />}
-        {page === 'links' && <Links />}
+      <main className="flex-1 max-w-[1440px] mx-auto w-full p-4 md:p-6">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={page}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {page === 'dashboard' && <Dashboard navigate={navigate} />}
+            {page === 'news' && <News />}
+            {page === 'directory' && <Directory />}
+            {page === 'canteen' && <Canteen />}
+            {page === 'links' && <Links />}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
-      <footer className="mt-12 w-full border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8">
-        <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-3 opacity-50 grayscale">
-            <Building2 size={24} />
-            <span className="font-black text-sm uppercase tracking-tighter">Alps Alpine Co., Ltd.</span>
-          </div>
-          <div className="flex gap-8 text-[11px] font-medium text-slate-500 uppercase tracking-widest">
+      <footer className="mt-10 w-full px-4 md:px-6 pb-6">
+        <div className="max-w-[1440px] mx-auto glass rounded-2xl px-6 py-5 flex flex-col md:flex-row justify-between items-center gap-4">
+          <span className="font-black text-xs uppercase tracking-tighter italic text-slate-500 dark:text-slate-400">
+            Alps Alpine Co., Ltd.
+          </span>
+          <div className="flex gap-6 text-[11px] font-semibold text-slate-500 uppercase tracking-widest">
             <a className="hover:text-accent transition-colors" href="#">
               Ochrana údajů
             </a>
             <a className="hover:text-accent transition-colors" href="#">
-              Podmínky užití
-            </a>
-            <a className="hover:text-accent transition-colors" href="#">
               Compliance
             </a>
-            <a className="hover:text-accent transition-colors" href="https://www.alpsalpine.com" target="_blank" rel="noreferrer">
+            <a
+              className="hover:text-accent transition-colors"
+              href="https://www.alpsalpine.com"
+              target="_blank"
+              rel="noreferrer"
+            >
               Web společnosti
             </a>
           </div>
