@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { pageFromHash, initialDesign, designs, type Page, type Design } from './lib/nav';
-import { AuroraShell, EditorialShell, NeoShell } from './components/shells';
+import { AuroraShell, EditorialShell, NeoShell, CorporateShell } from './components/shells';
 import Dashboard from './pages/Dashboard';
 import News from './pages/News';
 import Directory from './pages/Directory';
@@ -60,7 +60,14 @@ export default function App() {
   );
 
   const shellProps = { page, navigate, dark, toggleDark: () => setDark(!dark) };
-  const Shell = design === 'editorial' ? EditorialShell : design === 'neo' ? NeoShell : AuroraShell;
+  const Shell =
+    design === 'editorial'
+      ? EditorialShell
+      : design === 'neo'
+        ? NeoShell
+        : design === 'corporate'
+          ? CorporateShell
+          : AuroraShell;
 
   return (
     <>

@@ -37,6 +37,19 @@
   --radius-2xl: 0.625rem;
 }
 
+/* ── Corporate: alpsalpine.com – bílá, značková modrá, ostré rohy ── */
+:root[data-design='corporate'] {
+  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-primary: #0b318f;
+  --color-accent: #0b318f;
+  --color-accent-2: #2f6fdb;
+  --color-background-light: #ffffff;
+  --color-background-dark: #0c1017;
+  --radius-lg: 0.125rem;
+  --radius-xl: 0.125rem;
+  --radius-2xl: 0.125rem;
+}
+
 /* ── Neon: technický velín, kyan + limetka, mřížka ────────────────── */
 :root[data-design='neo'] {
   --font-display: "JetBrains Mono", ui-monospace, monospace;
@@ -80,6 +93,12 @@
     background: linear-gradient(to bottom, rgba(159, 18, 57, 0.04), transparent 30rem);
   }
 
+  /* Corporate: čistá bílá bez efektů */
+  :root[data-design='corporate'] body::before,
+  :root[data-design='corporate'].dark body::before {
+    background: none;
+  }
+
   /* Neon: technická mřížka + kyanová záře */
   :root[data-design='neo'] body::before {
     background:
@@ -118,6 +137,12 @@
   :root[data-design='neo'] .glass,
   :root[data-design='neo'] .glass-strong {
     @apply bg-white/70 dark:bg-cyan-950/25 backdrop-blur-xl border-cyan-700/20 dark:border-cyan-400/15;
+  }
+
+  /* Corporate: plné bílé plochy s jemnou šedou linkou */
+  :root[data-design='corporate'] .glass,
+  :root[data-design='corporate'] .glass-strong {
+    @apply bg-white dark:bg-slate-900 backdrop-blur-none border-slate-200 dark:border-slate-800;
   }
 
   .text-gradient {

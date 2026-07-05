@@ -316,6 +316,155 @@ export function NeoShell({ page, navigate, dark, toggleDark, children }: ShellPr
   );
 }
 
+/* ────────────────────────────────────────────────────────────────────
+ * Corporate – čistá bílá hlavička ve stylu alpsalpine.com,
+ * modré podtržení aktivní položky, tmavě modrá patička
+ * ──────────────────────────────────────────────────────────────────── */
+export function CorporateShell({ page, navigate, dark, toggleDark, children }: ShellProps) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const go = (p: typeof page) => {
+    navigate(p);
+    setMenuOpen(false);
+  };
+
+  return (
+    <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden selection:bg-accent/20">
+      <header className="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+        <div className="max-w-[1280px] mx-auto px-4 md:px-8 flex items-center justify-between gap-6 h-[68px]">
+          <button onClick={() => go('dashboard')} className="flex items-baseline gap-3 group shrink-0">
+            <span className="text-accent text-2xl font-black leading-none tracking-tighter uppercase italic">
+              ALPS ALPINE
+            </span>
+            <span className="hidden md:block text-[10px] font-semibold text-slate-400 uppercase tracking-[0.25em]">
+              Intranet ALCZ
+            </span>
+          </button>
+
+          <nav className="hidden lg:flex items-center h-full">
+            {pages.map((p) => (
+              <button
+                key={p.id}
+                onClick={() => go(p.id)}
+                className={`relative h-full px-5 text-sm font-medium transition-colors ${
+                  page === p.id
+                    ? 'text-accent'
+                    : 'text-slate-700 dark:text-slate-300 hover:text-accent'
+                }`}
+              >
+                {p.label}
+                {page === p.id && (
+                  <motion.span
+                    layoutId="corporate-underline"
+                    transition={{ type: 'spring', bounce: 0.2, duration: 0.5 }}
+                    className="absolute bottom-0 left-3 right-3 h-[3px] bg-accent"
+                  />
+                )}
+              </button>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-1">
+            <button
+              onClick={toggleDark}
+              className="p-2.5 text-slate-500 dark:text-slate-400 hover:text-accent transition-colors"
+              aria-label="Přepnout tmavý režim"
+            >
+              {dark ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+            <button className="relative p-2.5 text-slate-500 dark:text-slate-400 hover:text-accent transition-colors">
+              <Bell size={18} />
+              <span className="absolute top-2 right-2 size-1.5 bg-accent rounded-full"></span>
+            </button>
+            <div className="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-2 hidden sm:block"></div>
+            <div className="hidden sm:block text-right">
+              <p className="text-xs font-bold text-slate-900 dark:text-white leading-none">Jan Novák</p>
+              <p className="text-[10px] text-slate-500 mt-0.5">Vedoucí provozu</p>
+            </div>
+            <button
+              className="lg:hidden p-2.5 text-slate-600 dark:text-slate-400"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Menu"
+            >
+              {menuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
+        </div>
+
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.nav
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              className="lg:hidden overflow-hidden border-t border-slate-200 dark:border-slate-800"
+            >
+              <div className="px-4 py-2 flex flex-col">
+                {pages.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => go(p.id)}
+                    className={`text-left px-3 py-3 text-sm font-medium border-b border-slate-100 dark:border-slate-800 last:border-0 ${
+                      page === p.id ? 'text-accent font-bold' : 'text-slate-700 dark:text-slate-300'
+                    }`}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+            </motion.nav>
+          )}
+        </AnimatePresence>
+      </header>
+
+      <main className={`flex-1 w-full ${page === 'dashboard' ? '' : 'max-w-[1280px] mx-auto px-4 md:px-8 py-8'}`}>
+        {children}
+      </main>
+
+      <footer className="mt-16 bg-primary dark:bg-slate-950 text-white">
+        <div className="max-w-[1280px] mx-auto px-4 md:px-8 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <p className="text-xl font-black uppercase italic tracking-tighter">ALPS ALPINE</p>
+            <p className="text-[11px] text-white/60 mt-2 leading-relaxed">
+              Alps Alpine Co., Ltd. — závod ALCZ Sebranice
+              <br />
+              Interní portál pro zaměstnance
+            </p>
+          </div>
+          <div className="text-[12px] flex flex-col gap-2 text-white/80">
+            {pages.map((p) => (
+              <button key={p.id} onClick={() => go(p.id)} className="text-left hover:text-white hover:underline underline-offset-4 w-fit">
+                {p.label}
+              </button>
+            ))}
+          </div>
+          <div className="text-[12px] flex flex-col gap-2 text-white/80">
+            <a className="hover:text-white hover:underline underline-offset-4 w-fit" href="#">
+              Ochrana údajů
+            </a>
+            <a className="hover:text-white hover:underline underline-offset-4 w-fit" href="#">
+              Compliance
+            </a>
+            <a
+              className="hover:text-white hover:underline underline-offset-4 w-fit"
+              href="https://www.alpsalpine.com"
+              target="_blank"
+              rel="noreferrer"
+            >
+              www.alpsalpine.com
+            </a>
+          </div>
+        </div>
+        <div className="border-t border-white/15">
+          <div className="max-w-[1280px] mx-auto px-4 md:px-8 py-4 text-[10px] text-white/50">
+            © 2026 Alps Alpine Co., Ltd. Všechna práva vyhrazena.
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
 /* ── sdílené drobnosti ─────────────────────────────────────────────── */
 
 function DarkToggle({ dark, toggleDark }: { dark: boolean; toggleDark: () => void }) {
