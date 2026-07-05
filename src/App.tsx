@@ -17,6 +17,22 @@ const pages: { id: Page; label: string }[] = [
   { id: 'links', label: 'Systémy' },
 ];
 
+type Design = 'glass' | 'editorial' | 'neo';
+
+const designs: { id: Design; label: string }[] = [
+  { id: 'glass', label: 'Aurora' },
+  { id: 'editorial', label: 'Papír' },
+  { id: 'neo', label: 'Neon' },
+];
+
+function initialDesign(): Design {
+  const fromUrl = new URLSearchParams(window.location.search).get('design');
+  if (designs.some((d) => d.id === fromUrl)) return fromUrl as Design;
+  const saved = localStorage.getItem('design');
+  if (designs.some((d) => d.id === saved)) return saved as Design;
+  return 'glass';
+}
+
 function pageFromHash(): Page {
   const hash = window.location.hash.replace('#', '');
   return pages.some((p) => p.id === hash) ? (hash as Page) : 'dashboard';
@@ -30,12 +46,18 @@ export default function App() {
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
   const [menuOpen, setMenuOpen] = useState(false);
+  const [design, setDesign] = useState<Design>(initialDesign);
 
   useEffect(() => {
     const onHashChange = () => setPage(pageFromHash());
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
+
+  useEffect(() => {
+    document.documentElement.dataset.design = design;
+    localStorage.setItem('design', design);
+  }, [design]);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark);
@@ -183,6 +205,33 @@ export default function App() {
           </motion.div>
         </AnimatePresence>
       </main>
+
+      {/* Plovoucí přepínač designových variant */}
+      <div className="fixed bottom-5 right-5 z-50 glass-strong rounded-full p-1.5 flex items-center gap-1 shadow-[0_12px_36px_rgba(2,20,60,0.18)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.5)]">
+        <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 px-2 hidden sm:block">
+          Vzhled
+        </span>
+        {designs.map((d) => (
+          <button
+            key={d.id}
+            onClick={() => setDesign(d.id)}
+            className={`relative px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors ${
+              design === d.id
+                ? 'text-white'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            {design === d.id && (
+              <motion.span
+                layoutId="design-pill"
+                transition={{ type: 'spring', bounce: 0.25, duration: 0.5 }}
+                className="absolute inset-0 rounded-full bg-gradient-to-r from-accent to-accent-2"
+              />
+            )}
+            <span className="relative z-10">{d.label}</span>
+          </button>
+        ))}
+      </div>
 
       <footer className="mt-10 w-full px-4 md:px-6 pb-6">
         <div className="max-w-[1440px] mx-auto glass rounded-2xl px-6 py-5 flex flex-col md:flex-row justify-between items-center gap-4">
