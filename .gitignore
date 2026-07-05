@@ -6,3 +6,6 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# SQLite databáze API serveru
+server/data/
