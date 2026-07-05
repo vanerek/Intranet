@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bell, Moon, Sun, Menu, X } from 'lucide-react';
+import { Bell, Moon, Sun, Menu, X, Mail, Search, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { pages, type ShellProps } from '../lib/nav';
 
@@ -317,79 +317,71 @@ export function NeoShell({ page, navigate, dark, toggleDark, children }: ShellPr
 }
 
 /* ────────────────────────────────────────────────────────────────────
- * Corporate – čistá bílá hlavička ve stylu alpsalpine.com,
- * modré podtržení aktivní položky, tmavě modrá patička
+ * Corporate – věrně podle alpsalpine.com: wordmark ΛLPSΛLPINE,
+ * fotografická hlavička stránky, obsahový panel se zaoblenými rohy,
+ * drobečková navigace a čtvercová orámovaná tlačítka
  * ──────────────────────────────────────────────────────────────────── */
+
+export function AlpsWordmark({ light = false }: { light?: boolean }) {
+  return (
+    <span className="flex flex-col items-start leading-none select-none">
+      <span
+        className={`text-[26px] font-black tracking-[-0.06em] ${light ? 'text-white' : 'text-accent'}`}
+        style={{ fontFamily: 'Inter, sans-serif' }}
+      >
+        ΛLPSΛLPINE
+      </span>
+      <span className={`text-[11px] font-bold italic tracking-tight mt-0.5 ml-0.5 ${light ? 'text-white/80' : 'text-accent'}`}>
+        extends your senses
+      </span>
+    </span>
+  );
+}
+
 export function CorporateShell({ page, navigate, dark, toggleDark, children }: ShellProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const active = pages.find((p) => p.id === page);
   const go = (p: typeof page) => {
     navigate(p);
     setMenuOpen(false);
   };
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden selection:bg-accent/20">
-      <header className="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
-        <div className="max-w-[1280px] mx-auto px-4 md:px-8 flex items-center justify-between gap-6 h-[68px]">
-          <button onClick={() => go('dashboard')} className="flex items-baseline gap-3 group shrink-0">
-            <span className="text-accent text-2xl font-black leading-none tracking-tighter uppercase italic">
-              ALPS ALPINE
-            </span>
-            <span className="hidden md:block text-[10px] font-semibold text-slate-400 uppercase tracking-[0.25em]">
-              Intranet ALCZ
-            </span>
+    <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden selection:bg-accent/20 bg-slate-100 dark:bg-slate-950">
+      {/* Bílá hlavička s wordmarkem a ikonami */}
+      <header className="sticky top-0 z-50 bg-white dark:bg-slate-900 shadow-sm">
+        <div className="max-w-[1280px] mx-auto px-4 md:px-8 flex items-center justify-between gap-6 h-[72px]">
+          <button onClick={() => go('dashboard')} className="shrink-0">
+            <AlpsWordmark />
           </button>
 
-          <nav className="hidden lg:flex items-center h-full">
+          <nav className="hidden lg:flex items-center gap-8">
             {pages.map((p) => (
               <button
                 key={p.id}
                 onClick={() => go(p.id)}
-                className={`relative h-full px-5 text-sm font-medium transition-colors ${
-                  page === p.id
-                    ? 'text-accent'
-                    : 'text-slate-700 dark:text-slate-300 hover:text-accent'
+                className={`text-[15px] transition-colors ${
+                  page === p.id ? 'text-accent font-bold' : 'text-accent/80 font-medium hover:text-accent'
                 }`}
               >
                 {p.label}
-                {page === p.id && (
-                  <motion.span
-                    layoutId="corporate-underline"
-                    transition={{ type: 'spring', bounce: 0.2, duration: 0.5 }}
-                    className="absolute bottom-0 left-3 right-3 h-[3px] bg-accent"
-                  />
-                )}
               </button>
             ))}
           </nav>
 
-          <div className="flex items-center gap-1">
-            <button
-              onClick={toggleDark}
-              className="p-2.5 text-slate-500 dark:text-slate-400 hover:text-accent transition-colors"
-              aria-label="Přepnout tmavý režim"
-            >
-              {dark ? <Sun size={18} /> : <Moon size={18} />}
+          <div className="flex items-center gap-4 text-accent dark:text-blue-300">
+            <Mail size={22} strokeWidth={1.8} className="hidden sm:block" />
+            <button onClick={toggleDark} aria-label="Přepnout tmavý režim">
+              {dark ? <Sun size={22} strokeWidth={1.8} /> : <Moon size={22} strokeWidth={1.8} />}
             </button>
-            <button className="relative p-2.5 text-slate-500 dark:text-slate-400 hover:text-accent transition-colors">
-              <Bell size={18} />
-              <span className="absolute top-2 right-2 size-1.5 bg-accent rounded-full"></span>
-            </button>
-            <div className="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-2 hidden sm:block"></div>
-            <div className="hidden sm:block text-right">
-              <p className="text-xs font-bold text-slate-900 dark:text-white leading-none">Jan Novák</p>
-              <p className="text-[10px] text-slate-500 mt-0.5">Vedoucí provozu</p>
-            </div>
-            <button
-              className="lg:hidden p-2.5 text-slate-600 dark:text-slate-400"
-              onClick={() => setMenuOpen(!menuOpen)}
-              aria-label="Menu"
-            >
-              {menuOpen ? <X size={20} /> : <Menu size={20} />}
+            <Search size={22} strokeWidth={1.8} className="hidden sm:block" />
+            <button className="lg:hidden" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
+              {menuOpen ? <X size={26} /> : <Menu size={26} />}
             </button>
           </div>
         </div>
 
+        {/* Mobilní menu ve stylu webu: velké modré položky se čtvercovými šipkami */}
         <AnimatePresence>
           {menuOpen && (
             <motion.nav
@@ -397,18 +389,28 @@ export function CorporateShell({ page, navigate, dark, toggleDark, children }: S
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.25 }}
-              className="lg:hidden overflow-hidden border-t border-slate-200 dark:border-slate-800"
+              className="lg:hidden overflow-hidden bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800"
             >
-              <div className="px-4 py-2 flex flex-col">
+              <div className="px-5 py-4 flex flex-col">
+                <div className="flex items-center border-2 border-accent/50 rounded-xl bg-white dark:bg-slate-950 px-4 py-2.5 mb-4">
+                  <input
+                    placeholder="Hledat…"
+                    className="flex-1 bg-transparent text-[15px] focus:outline-none placeholder:text-slate-400"
+                  />
+                  <Search size={20} className="text-accent" />
+                </div>
                 {pages.map((p) => (
                   <button
                     key={p.id}
                     onClick={() => go(p.id)}
-                    className={`text-left px-3 py-3 text-sm font-medium border-b border-slate-100 dark:border-slate-800 last:border-0 ${
-                      page === p.id ? 'text-accent font-bold' : 'text-slate-700 dark:text-slate-300'
-                    }`}
+                    className="flex items-center justify-between py-3.5 border-b border-accent/20 last:border-0 group"
                   >
-                    {p.label}
+                    <span className={`text-[17px] ${page === p.id ? 'font-bold' : 'font-medium'} text-accent`}>
+                      {p.label}
+                    </span>
+                    <span className="size-9 border-2 border-accent/60 rounded-lg flex items-center justify-center text-accent">
+                      <ChevronRight size={18} />
+                    </span>
                   </button>
                 ))}
               </div>
@@ -417,41 +419,62 @@ export function CorporateShell({ page, navigate, dark, toggleDark, children }: S
         </AnimatePresence>
       </header>
 
-      <main className={`flex-1 w-full ${page === 'dashboard' ? '' : 'max-w-[1280px] mx-auto px-4 md:px-8 py-8'}`}>
-        {children}
-      </main>
+      {/* Fotografická hlavička stránky s velkým bílým titulkem */}
+      <div className="relative h-52 md:h-72 overflow-hidden bg-gradient-to-br from-[#3a6fd8] to-primary">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url('https://picsum.photos/seed/alcz-hq-${page}/1600/500')` }}
+        ></div>
+        <div className="absolute inset-0 bg-primary/25"></div>
+        <h1 className="relative z-10 h-full flex items-center justify-center text-white text-4xl md:text-6xl font-light tracking-wide">
+          {active?.label}
+        </h1>
+      </div>
 
-      <footer className="mt-16 bg-primary dark:bg-slate-950 text-white">
+      {/* Obsahový panel se zaoblenými rohy přetažený přes fotografii */}
+      <div className="relative -mt-8 flex-1 rounded-t-[2.5rem] bg-slate-100 dark:bg-slate-950 shadow-[0_-8px_24px_rgba(0,0,0,0.08)]">
+        <div className="max-w-[1280px] mx-auto px-4 md:px-8 pt-7 pb-2 flex items-center gap-2 text-[14px]">
+          <button onClick={() => go('dashboard')} className="text-accent underline underline-offset-4 decoration-accent/40 hover:decoration-accent">
+            TOP
+          </button>
+          <ChevronRight size={15} className="text-slate-400" />
+          <span className="text-slate-700 dark:text-slate-300">{active?.label}</span>
+        </div>
+        <main className="max-w-[1280px] mx-auto px-4 md:px-8 pb-12 w-full">{children}</main>
+      </div>
+
+      {/* Tmavě modrá patička */}
+      <footer className="bg-primary dark:bg-slate-950 dark:border-t dark:border-slate-800 text-white">
         <div className="max-w-[1280px] mx-auto px-4 md:px-8 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <p className="text-xl font-black uppercase italic tracking-tighter">ALPS ALPINE</p>
-            <p className="text-[11px] text-white/60 mt-2 leading-relaxed">
+            <AlpsWordmark light />
+            <p className="text-[11px] text-white/60 mt-3 leading-relaxed">
               Alps Alpine Co., Ltd. — závod ALCZ Sebranice
               <br />
               Interní portál pro zaměstnance
             </p>
           </div>
-          <div className="text-[12px] flex flex-col gap-2 text-white/80">
+          <div className="text-[13px] flex flex-col gap-2.5 text-white/85">
             {pages.map((p) => (
-              <button key={p.id} onClick={() => go(p.id)} className="text-left hover:text-white hover:underline underline-offset-4 w-fit">
-                {p.label}
+              <button key={p.id} onClick={() => go(p.id)} className="text-left hover:underline underline-offset-4 w-fit flex items-center gap-2">
+                <ChevronRight size={13} className="text-white/50" /> {p.label}
               </button>
             ))}
           </div>
-          <div className="text-[12px] flex flex-col gap-2 text-white/80">
-            <a className="hover:text-white hover:underline underline-offset-4 w-fit" href="#">
-              Ochrana údajů
+          <div className="text-[13px] flex flex-col gap-2.5 text-white/85">
+            <a className="hover:underline underline-offset-4 w-fit flex items-center gap-2" href="#">
+              <ChevronRight size={13} className="text-white/50" /> Ochrana údajů
             </a>
-            <a className="hover:text-white hover:underline underline-offset-4 w-fit" href="#">
-              Compliance
+            <a className="hover:underline underline-offset-4 w-fit flex items-center gap-2" href="#">
+              <ChevronRight size={13} className="text-white/50" /> Compliance
             </a>
             <a
-              className="hover:text-white hover:underline underline-offset-4 w-fit"
+              className="hover:underline underline-offset-4 w-fit flex items-center gap-2"
               href="https://www.alpsalpine.com"
               target="_blank"
               rel="noreferrer"
             >
-              www.alpsalpine.com
+              <ChevronRight size={13} className="text-white/50" /> www.alpsalpine.com
             </a>
           </div>
         </div>

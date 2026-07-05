@@ -40,14 +40,14 @@
 /* ── Corporate: alpsalpine.com – bílá, značková modrá, ostré rohy ── */
 :root[data-design='corporate'] {
   --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --color-primary: #0b318f;
-  --color-accent: #0b318f;
-  --color-accent-2: #2f6fdb;
-  --color-background-light: #ffffff;
+  --color-primary: #14328f;
+  --color-accent: #14328f;
+  --color-accent-2: #3a6fd8;
+  --color-background-light: #f1f3f7;
   --color-background-dark: #0c1017;
-  --radius-lg: 0.125rem;
-  --radius-xl: 0.125rem;
-  --radius-2xl: 0.125rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
 }
 
 /* ── Neon: technický velín, kyan + limetka, mřížka ────────────────── */
