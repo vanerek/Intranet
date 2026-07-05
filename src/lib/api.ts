@@ -44,6 +44,9 @@ export interface CanteenDay {
   mains: string[];
 }
 
+// Demo režim bez API serveru (GitHub Pages): data jsou zabalená v buildu.
+const STATIC_DATA = import.meta.env.VITE_STATIC_DATA === 'true';
+
 export function useApi<T>(url: string): { data: T | null; loading: boolean; error: string | null } {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
@@ -53,6 +56,21 @@ export function useApi<T>(url: string): { data: T | null; loading: boolean; erro
     let cancelled = false;
     setLoading(true);
     setError(null);
+    if (STATIC_DATA) {
+      import('./staticData')
+        .then(({ staticResolve }) => {
+          if (!cancelled) setData(staticResolve(url) as T);
+        })
+        .catch((err: Error) => {
+          if (!cancelled) setError(err.message);
+        })
+        .finally(() => {
+          if (!cancelled) setLoading(false);
+        });
+      return () => {
+        cancelled = true;
+      };
+    }
     fetch(url)
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);

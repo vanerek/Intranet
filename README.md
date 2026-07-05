@@ -2,6 +2,8 @@
 
 Moderní firemní intranet pro zaměstnance ALPS ALPINE (ALCZ). Obsahuje nástěnku s aktualitami a firemním kalendářem, adresář zaměstnanců s vyhledáváním, týdenní jídelníček kantýny a rozcestník firemních systémů a aplikací.
 
+**Živé demo:** https://vanerek.github.io/Intranet/ (statická verze bez API – ukázková data jsou zabalená v buildu, nasazuje se automaticky přes GitHub Actions z `.github/workflows/deploy-pages.yml`)
+
 ## Technologie
 
 - **Frontend:** React 19 + TypeScript, Vite, Tailwind CSS 4, lucide-react, motion
@@ -44,6 +46,14 @@ npm start       # spustí Express server, který servíruje API i frontend z dis
 | `src/lib/api.ts` | Typy API a hook pro načítání dat |
 
 Databáze se ukládá do `server/data/intranet.db` (v gitu ignorováno). Pro nové naplnění ukázkovými daty stačí soubor smazat a restartovat server.
+
+## Statický demo režim (bez API)
+
+Build s proměnnou `VITE_STATIC_DATA=true` nepotřebuje API server – data ze `src/lib/staticData.ts` se zabalí přímo do frontendu a filtrování probíhá v prohlížeči. Používá se pro GitHub Pages:
+
+```
+VITE_STATIC_DATA=true npm run build
+```
 
 ## Kontrola typů
 
